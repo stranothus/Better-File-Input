@@ -53,6 +53,18 @@ class FileInput extends HTMLElement {
                 };
             }
         }
+
+        this.addEventListener("$change", event => {
+            if(this.valid) {
+                this.dispatchEvent(new CustomEvent("$validated", {
+                    ...e,
+                    valid: this.valid,
+                    files: this.files,
+                    fileSizes: this.fileSizesString,
+                    totalSize: this.fileTotalSizeString
+                }));
+            }
+        });
     }
 
     get value() {
@@ -118,7 +130,7 @@ class FileInput extends HTMLElement {
             const size = this.files.map(v => v.size).reduce((a, b) => a + b, 0);
 
             if(size < 1024) {
-                return size + 'bytes';
+                return size + 'B';
             } else if(size >= 1024 && size < 1048576) {
                 return (size / 1024).toFixed(1) + 'KB';
             } else if(size >= 1048576) {
